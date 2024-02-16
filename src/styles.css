@@ -1,4 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+}
+mat-card{
+    width: 400px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+mat-card-header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.custom-calendar {
+  max-width: 600px;
+  margin: auto;
+}
+
+.custom-calendar mat-calendar-body mat-calendar-cell {
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.custom-holiday {
+  background-color: rgb(167, 167, 167) !important;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.mat-calendar .mat-calendar-next-button,
+.mat-calendar .mat-calendar-previous-button {
+  display: none!important;
+}
