@@ -1,0 +1,28 @@
+<div class="search_container">
+    <app-movie-search [disableButton]="disabledSearchButton" (searchEmitter)="searchEmitterSubscriber($event)"></app-movie-search>
+</div>
+  
+  <div  class="pagination_container">
+    <mat-paginator [length]="totalMatches" [pageSize]="moviesLimit" [pageSizeOptions]="[4,8, 16,20]" (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+  
+  <div class="main_movie_container">
+    <ng-container *ngIf="searchResults.length == 0 && !pending">
+        <ng-container *ngIf="movies$ | async  as movies; else loading">
+          <ng-container *ngFor="let oneMovie of movies.results;trackByFn">
+            <app-movie-card [oneMovie]="oneMovie"></app-movie-card>
+          </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="searchResults.length > 0">
+            <app-movie-searched-card  [searchResults]="searchResults"></app-movie-searched-card>
+    </ng-container>
+  </div>
+  
+  <ng-template #loading>
+    <div class="loading_container">
+<app-movie-loading></app-movie-loading>
+    </div>
+  </ng-template>
+  

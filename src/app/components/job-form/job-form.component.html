@@ -1,0 +1,53 @@
+<div class="main_container">
+  <div class="center_container">
+    <form [formGroup]="jobForm" #form="ngForm" (ngSubmit)="onSubmit()">
+      <button mat-raised-button  type="button" class="add_job_btn"  (click)="addNewJob()">Add job</button>
+      <ng-container *ngFor="let jobGroup of jobsArray.controls; let i = index;trackByFn" formArrayName="jobs">
+        <ng-container [formGroupName]="i">
+
+          <div class="each_service_container">
+          <div class="each_element">
+            <button type="button" class="remove_job_btn" mat-raised-button color="warn" (click)="removeJob(i)">Remove job</button>
+            <mat-form-field>
+              <input matInput formControlName="companyName" placeholder="Company Name">
+
+              <mat-error *ngIf="jobGroup.get('companyName')?.hasError('minLength')">
+                Company name must be at least <strong>
+                  {{ jobGroup.get('companyName')?.getError('minLength').requiredLength}} </strong>characters long.
+              </mat-error>
+              <mat-error *ngIf="jobGroup.get('companyName')?.hasError('required')">
+                Company name is required
+              </mat-error>
+
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput formControlName="companyWebsite" placeholder="Company Website">
+              <mat-error *ngIf="jobGroup.get('companyWebsite')?.hasError('required')">
+                Company website is required
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <textarea matInput formControlName="companyDescription" placeholder="Company Description"></textarea>
+              <mat-error *ngIf="jobGroup.get('companyWebsite')?.hasError('required')">
+                company description is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <button class="add_position_btn" mat-raised-button color="primary" type="button"
+            (click)="addPosition(jobGroup)">Add Position</button>
+          <div formArrayName="positions">
+            <ng-container *ngFor="let positionGroup of getPositions(i).controls; let j = index" [formGroupName]="j">
+              <app-job-position-form [parentForm]="positionGroup" (remove)="removePosition(jobGroup, j,i)">
+              </app-job-position-form>
+            </ng-container>
+          </div>
+        </div>
+        </ng-container>
+      </ng-container>
+
+      <button mat-raised-button type="submit" [disabled]="form.invalid">Submit Form</button>
+
+    </form>
+  </div>
+</div>

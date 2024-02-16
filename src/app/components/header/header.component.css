@@ -1,0 +1,15 @@
+*{
+    list-style-type: none;
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+}
+ul{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+header{
+    padding: 10px;
+    background-color: rgb(252, 249, 249);
+}

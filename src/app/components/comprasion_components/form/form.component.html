@@ -1,0 +1,11 @@
+
+<form>
+    <mat-form-field>
+        <input  name="value1" type="text" matInput [(ngModel)]="value" (input)="writing()" placeholder="write text">
+    </mat-form-field>
+    <mat-form-field>
+        <input name="value2" type="text" matInput placeholder="addElement in array" [(ngModel)]="newArrayElement">
+      </mat-form-field>
+      <button mat-icon-button (click)="addElementInArray()" [disabled]="newArrayElement.trim() == ''">+</button>
+      
+</form>

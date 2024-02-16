@@ -1,0 +1,11 @@
+<div class="container" *ngIf="oneMovie && oneMovie.image">
+  <mat-card>
+    <mat-card-header>
+      <strong class="movie_title">{{ oneMovie.title }}</strong>
+      <strong class="movie_year">{{ oneMovie.year }}</strong>
+    </mat-card-header>
+    <mat-card-content>
+      <img class="movie_image" [src]="oneMovie.image.url ? oneMovie.image.url : 'fallback_image_url'" alt="">
+    </mat-card-content>
+  </mat-card>
+</div>

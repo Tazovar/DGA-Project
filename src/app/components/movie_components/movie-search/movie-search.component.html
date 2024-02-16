@@ -1,0 +1,8 @@
+<div class="search_container">
+  <form #form="ngForm" (ngSubmit)="search(form)">
+    <mat-form-field>
+      <input required matInput name="search" type="text" [(ngModel)]="searchQuery" placeholder="Search by title" (keydown.enter)="search(form)">
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="search_btn" type="submit" [disabled]="disableButton || form.invalid">Search</button>
+  </form>
+</div>

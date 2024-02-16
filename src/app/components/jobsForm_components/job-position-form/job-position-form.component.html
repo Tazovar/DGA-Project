@@ -1,0 +1,35 @@
+<form [formGroup]="parentForm">
+  <mat-form-field>
+    <input matInput formControlName="positionName" placeholder="Position Name">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput formControlName="positionLevel" placeholder="Position Level">
+  </mat-form-field>
+  <mat-form-field>
+    <textarea matInput formControlName="positionDescription" placeholder="Position Description"></textarea>
+  </mat-form-field>
+  <div formGroupName="Date">
+    <div class="date_container">
+      <div class="only_date_container">
+        <mat-form-field>
+          <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" placeholder="Start Date">
+          <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" placeholder="End Date">
+          <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <mat-error *ngIf="parentForm.get('Date').dirty && parentForm.get('Date').errors && parentForm.get('Date').errors.dateComparison">
+        Start date must be before end date and within the current year.
+      </mat-error>
+      <mat-error *ngIf="parentForm.get('Date').dirty && parentForm.get('Date').errors && parentForm.get('Date').errors.invalidDate">
+        Invalid start or end date.
+      </mat-error>
+    </div>
+    
+  </div>
+  <button mat-raised-button type="button" (click)="removePosition()" color="warn">Remove Position</button>
+</form>
