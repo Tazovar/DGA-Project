@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MovieService } from 'src/app/services/movie.service';
-import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 import { FirsMovie, Movie } from 'src/app/interfaces/movie';
+import { SweetAlertService } from 'src/app/services/sweet-alert.service';
 
 @Component({
   selector: 'app-movie-page',
@@ -12,27 +12,25 @@ import { FirsMovie, Movie } from 'src/app/interfaces/movie';
 })
 export class MoviePageComponent implements OnInit, OnDestroy {
   movies$!: Observable<FirsMovie>;
-  pending: boolean = false;
-  moviesTitle: string = "t";
-  moviesLimit: number = 4;
-  moviesPageIndex: number = 0;
-  totalMatches: number = 0;
-  searchQuery: string = "";
+  pending = false;
+  moviesLimit = 4;
+  moviesPageIndex = 0;
+  totalMatches = 0;
+  searchQuery = "";
   searchResults: Movie[] = [];
-  noresultText: string = ""
-  disabledSearchButton: boolean = false;
+  disabledSearchButton = false;
   searchSubscription: Subscription = new Subscription();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private movieService: MovieService, private sweetAlertService: SweetAlertService) {}
+  constructor(private movieService: MovieService,private sweetAlertService:SweetAlertService) {}
 
   ngOnInit(): void {
     this.loadMovies();
   }
 
   loadMovies(): void {
-    this.movies$ = this.movieService.getAllMovies(this.moviesTitle, this.moviesLimit, this.moviesPageIndex);
+    this.movies$ = this.movieService.getAllMovies("t", this.moviesLimit, this.moviesPageIndex);
 
     this.movies$.subscribe(response => {
       this.totalMatches = response.totalMatches;
@@ -64,17 +62,17 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       this.searchSubscription.unsubscribe();
       this.searchSubscription = this.movieService.searchMovies(this.searchQuery, this.moviesLimit, this.moviesPageIndex).subscribe((results: FirsMovie) => {
         if (results.results) {
-          this.sweetAlertService.successMovieSearchAlert()
           this.searchResults = results.results;
           this.totalMatches = results.totalMatches;
-          this.disabledSearchButton = false;
-          this.pending = false;
+          this.sweetAlertService.successMovieSearchAlert()
+
         } else {
           this.searchResults = [];
           this.sweetAlertService.errorMoviesSearchAlert(this.searchQuery);
-          this.disabledSearchButton = false;
-          this.pending = false;
+
         }
+        this.disabledSearchButton = false;
+        this.pending = false;
       });
     } else {
       this.searchResults = [];
@@ -85,4 +83,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.searchSubscription.unsubscribe();
   }
+  
+  trackByFn(index: number, item: any) {
+    return item.id; 
+  }  
 }

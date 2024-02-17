@@ -10,7 +10,7 @@
   <div class="main_movie_container">
     <ng-container *ngIf="searchResults.length == 0 && !pending">
         <ng-container *ngIf="movies$ | async  as movies; else loading">
-          <ng-container *ngFor="let oneMovie of movies.results;trackByFn">
+          <ng-container *ngFor="let oneMovie of movies.results; trackBy: trackByFn">
             <app-movie-card [oneMovie]="oneMovie"></app-movie-card>
           </ng-container>
         </ng-container>
