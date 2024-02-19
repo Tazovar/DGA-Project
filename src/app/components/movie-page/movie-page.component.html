@@ -3,7 +3,7 @@
 </div>
   
   <div  class="pagination_container">
-    <mat-paginator [length]="totalMatches" [pageSize]="moviesLimit" [pageSizeOptions]="[4,8, 16,20]" (page)="onPageChange($event)">
+    <mat-paginator [disabled]="disabledPageButton" [length]="totalMatches" [pageSize]="moviesLimit" [pageSizeOptions]="[4,8, 16,20]" (page)="onPageChange($event)">
     </mat-paginator>
   </div>
   

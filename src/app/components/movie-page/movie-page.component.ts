@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { EMPTY, Observable, Subscription, catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MovieService } from 'src/app/services/movie.service';
 import { FirsMovie, Movie } from 'src/app/interfaces/movie';
@@ -18,7 +18,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   totalMatches = 0;
   searchQuery = "";
   searchResults: Movie[] = [];
-  disabledSearchButton = false;
+  disabledSearchButton:boolean = false;
+  disabledPageButton:boolean = false
   searchSubscription: Subscription = new Subscription();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -30,26 +31,30 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   loadMovies(): void {
-    this.movies$ = this.movieService.getAllMovies("t", this.moviesLimit, this.moviesPageIndex);
-
-    this.movies$.subscribe(response => {
-      this.totalMatches = response.totalMatches;
-    });
+    this.movies$ = this.movieService.getAllMovies("t", this.moviesLimit, this.moviesPageIndex)
+      .pipe(
+        tap(result => this.totalMatches = result.totalMatches)
+      );
   }
 
   onPageChange(event: PageEvent): void {
     this.moviesPageIndex = event.pageIndex;
     this.moviesLimit = event.pageSize;
+    this.disabledPageButton = true
 
     if (this.searchResults.length > 0) {
       this.search();
+      this.disabledPageButton = false;
     } else {
       this.loadMovies();
+      this.disabledPageButton = false;
+
     }
   }
 
   searchEmitterSubscriber(event: string) {
     this.searchQuery = event;
+    this.paginator.firstPage()
     this.search();
   }
 
@@ -57,26 +62,38 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.pending = true;
     this.searchResults = [];
     this.disabledSearchButton = true;
-
+  
     if (this.searchQuery.trim() !== '') {
-      this.searchSubscription.unsubscribe();
-      this.searchSubscription = this.movieService.searchMovies(this.searchQuery, this.moviesLimit, this.moviesPageIndex).subscribe((results: FirsMovie) => {
-        if (results.results) {
-          this.searchResults = results.results;
-          this.totalMatches = results.totalMatches;
-          this.sweetAlertService.successMovieSearchAlert()
-
-        } else {
-          this.searchResults = [];
-          this.sweetAlertService.errorMoviesSearchAlert(this.searchQuery);
-
-        }
-        this.disabledSearchButton = false;
-        this.pending = false;
-      });
+      this.searchSubscription.unsubscribe(); 
+  
+      this.searchSubscription = this.movieService.searchMovies(this.searchQuery, this.moviesLimit, this.moviesPageIndex)
+        .pipe(
+          switchMap((results: FirsMovie) => {
+            if (results.results) {
+              this.searchResults = results.results;
+              this.totalMatches = results.totalMatches;
+              this.sweetAlertService.successMovieSearchAlert();
+              return of(null); 
+            } else {
+              this.searchResults = [];
+              this.sweetAlertService.errorMoviesSearchAlert(this.searchQuery);
+              return EMPTY; 
+            }
+          }),
+          catchError(error => {
+            console.error('search', error);
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.disabledSearchButton = false;
+            this.pending = false;
+          })
+        )
+        .subscribe();
     } else {
       this.searchResults = [];
       this.disabledSearchButton = false;
+      this.pending = false;
     }
   }
 

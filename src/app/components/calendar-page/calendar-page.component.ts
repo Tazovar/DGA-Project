@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./calendar-page.component.css']
 })
 export class CalendarPageComponent {
-  holidayDates:any[] = [new Date('2024-02-23'), new Date('2024-02-24')]
+  holidayDates:any[] = [new Date('2024-02-24'), new Date('2024-02-25')]
 }
